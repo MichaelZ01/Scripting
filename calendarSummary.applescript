@@ -3,22 +3,35 @@
 
 # Get event that user it searching for
 tell application "Finder"
-    activate
-    set eventname to the text returned of Â
-        (display dialog "Calendar" default answer "")
 
+    activate
+    set eventName to the text returned of Â
+        (display dialog "Calendar" default answer "")
 end tell
 
-# Locate event in calendar
+# Copy event data from calendar into applescript
 tell application "Calendar"
-    activate
-    tell calendar "Class"
-        try
-            show(first event where its summary = eventname)
-        on error
-            display dialog ("Event missing")
-        end try
-        
-    end tell
-end 
+
+    set {summaries, UIDs, startTime, endTime} to Â
+        {summary, uid, start date, end date} of events of calendar "Class"
+end tell
+
+set totalTime to 0
+
+repeat with i from 1 to (count summaries)
+    if (item i of summaries contains eventName) then
+        set duration to item i of endTime - item i of startTime
+        set totalTime to totalTime + duration
+    end if
+end repeat
+
+tell application "Finder"
+    if (totalTime = 0) then
+        display dialog ("Event does not exist")
+    else
+        display dialog("Total time: " & (totalTime as string))
+    end if
+end tell 
+
+
 
