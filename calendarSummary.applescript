@@ -1,34 +1,36 @@
 # A simple applescript program that gives general statistics regarding 
 # specific events in the macOS calendar application
 
-to convertTime(time)
+# Handler that converts time in seconds to hours/min/seconds
+on convertTime(timeInSec)
 
-    #set num to time
-    #set sec to 0
-    #set min to 0
-    #set hour to 0
+    set num to timeInSec as integer
+    set sec to 0
+    set min to 0
+    set hour to 0
 
-(*
+    # If time was greater than a minute
     if (num > 59) then
         set sec to num mod 60
-        set num to num / 60
+        # Removes second component of time
+        set num to num / 60 
+        set num to round of num rounding down
+        # If time was greater than a hour
         if (num > 59) then
             set min to num mod 60
+            # Remove minute component of time
             set hour to num / 60
+            set hour to round of hour rounding down
         else
             set min to num
         end if
     else
         set sec to num
     end if
-*)
-    #return (hour as string) & ":" & (min as string) & ":" & (sec as string)
 
-    return time
-
+    return (hour as string) & " Hours " & (min as string) & " Minutes " & Â
+        (sec as string) & " Seconds "
 end convertTime
-
-
 
 # Get event that user it searching for
 tell application "Finder"
@@ -59,11 +61,12 @@ end repeat
 
 # Display time
 tell application "Finder"
+    activate
     if (totalTime = 0) then
         display dialog ("Event does not exist")
     else
-        #set hmsTime to convertTime(totalTime)
-        display dialog("Total time: " & totalTime)
+        # "my" is needed to access function due to scope
+        display dialog("Total time:\n" & (my convertTime(totalTime)))
     end if
 end tell 
 
