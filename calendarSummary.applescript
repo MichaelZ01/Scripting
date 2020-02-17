@@ -57,6 +57,7 @@ set totalTime to 0
 
 # Go through events looking for match
 repeat with i from 1 to (count summaries)
+
     if (item i of summaries contains eventName) then
         # Add duration of event to total time
         set duration to item i of endTime - item i of startTime
@@ -66,6 +67,7 @@ end repeat
 
 # Display time
 tell application "Finder"
+
     activate
     if (totalTime = 0) then
         display dialog ("Event does not exist")
